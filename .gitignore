@@ -1,0 +1,6 @@
+node_modules
+.idea
+.vscode
+build
+cmake-build-debug
+CMakeLists.txt
