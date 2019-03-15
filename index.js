@@ -1,17 +1,16 @@
 const ext = require('bindings')('tld');
-// const buffer = Buffer.from(`{"name":"73.39.12.63","value":"c-73-39-12-63.hsd1.md.comcast.net"}
-// {"name":"73.39.12.63","value":"c-73-39-12-63.hsd1.md.comcast.net"}`);
 
 const fs = require('fs');
 const FILE_PATH = 'data/20170301-rdns-test.json';
-const LIST_SIZE = 4000;
+const LIST_SIZE = 10000;
 const es = require('event-stream');
 const stream = fs.createReadStream(FILE_PATH, 'utf-8');
-let list = [];
+let jsonString = '';
+let count = 0;
 
 console.time("TLD");
-const extractTld = (list) => {
-  const buffer = Buffer.from("["+list.toString()+"]");
+const extractTld = (param) => {
+  const buffer = Buffer.from(param);
   ext
     .extractTld(buffer, () => {})
     .then(console.log)
@@ -20,11 +19,13 @@ const extractTld = (list) => {
 stream
   .pipe(es.split())
   .pipe(es.map((string, cb) => {
-    if (list.length == LIST_SIZE) {
-      extractTld(list);
-      list = [];
+    if (count == LIST_SIZE) {
+      extractTld(jsonString + string + '\n' + null);
+      jsonString = '';
+      count = 0;
     }
-    list.push(string);
+    jsonString += `${string}\n`;
+    count ++;
     cb();
   }))
 

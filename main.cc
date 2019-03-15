@@ -1,8 +1,11 @@
 #include <napi.h>
 #include <iostream>
+#include <sstream>
 #include "src/worker/worker.h"
+#include "../../include/json/single_include/nlohmann/json.hpp"
 
 using namespace std;
+using json = nlohmann::json;
 
 Napi::Promise ExtractTld(const Napi::CallbackInfo &info)
 {
